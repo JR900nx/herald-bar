@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=1600">
+<title>Screenshot 3 — Style Variants</title>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { width: 1600px; height: 900px; overflow: hidden; font-family: -apple-system, BlinkMacSystemFont, 'Inter', sans-serif; background: #f8f8f8; display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 40px; gap: 0; }
+
+  h2 { font-size: 15px; font-weight: 700; color: #888; text-transform: uppercase; letter-spacing: 0.1em; margin-bottom: 28px; }
+
+  .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; width: 100%; }
+  .card { border-radius: 12px; overflow: hidden; box-shadow: 0 4px 24px rgba(0,0,0,0.08); background: #fff; }
+  .mini-nav { display: flex; align-items: center; justify-content: space-between; padding: 0 28px; height: 44px; border-bottom: 1px solid #f0f0f0; }
+  .mini-logo { font-weight: 700; font-size: 15px; color: #111; }
+  .mini-links { display: flex; gap: 20px; font-size: 11px; color: #888; }
+
+  .bar { display: flex; align-items: center; justify-content: center; gap: 12px; padding: 12px 36px; font-size: 13px; position: relative; }
+  .bar .cta { padding: 5px 14px; border-radius: 6px; font-weight: 700; font-size: 11px; }
+  .bar .cta-pill { border-radius: 99px; }
+  .bar .close-x { position: absolute; right: 12px; opacity: 0.6; font-size: 16px; }
+  .bar.spread { justify-content: space-between; padding: 12px 20px 12px 36px; }
+  .bar .timer { font-weight: 700; letter-spacing: 0.06em; font-size: 12px; }
+
+  .card-label { font-size: 10px; color: #aaa; padding: 8px 16px 0; font-weight: 600; letter-spacing: 0.05em; text-transform: uppercase; }
+</style>
+</head>
+<body>
+<h2>Fully customisable — built right into your theme editor</h2>
+<div class="grid">
+
+  <div class="card">
+    <div class="card-label">Dark — centered with button CTA</div>
+    <div class="bar" style="background:#1a1a1a;color:#fff;">
+      <span>Free shipping on orders over $50</span>
+      <div class="cta" style="background:#fff;color:#1a1a1a;">Shop now</div>
+      <span class="close-x">×</span>
+    </div>
+    <div class="mini-nav">
+      <div class="mini-logo">Maison</div>
+      <div class="mini-links"><span>Collections</span><span>Sale</span><span>About</span></div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-label">Brand blue — pill button</div>
+    <div class="bar" style="background:#1a6fff;color:#fff;">
+      <span>Summer sale — up to 40% off sitewide</span>
+      <div class="cta cta-pill" style="background:#fff;color:#1a6fff;">Shop the sale</div>
+      <span class="close-x">×</span>
+    </div>
+    <div class="mini-nav">
+      <div class="mini-logo">Bloom</div>
+      <div class="mini-links"><span>New Arrivals</span><span>Brands</span><span>Sale</span></div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-label">Light — spread layout, plain link</div>
+    <div class="bar spread" style="background:#f5f0eb;color:#1a1a1a;border-bottom:1px solid #e0d9d0;">
+      <span>New arrivals just dropped ✦</span>
+      <div style="display:flex;align-items:center;gap:12px;">
+        <a style="color:#1a1a1a;font-size:12px;text-decoration:underline;">Explore now</a>
+        <span style="color:#1a1a1a;opacity:0.5;font-size:16px;">×</span>
+      </div>
+    </div>
+    <div class="mini-nav">
+      <div class="mini-logo">Verdant</div>
+      <div class="mini-links"><span>Shop</span><span>About</span><span>Journal</span></div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-label">Dark green — spread with countdown timer</div>
+    <div class="bar spread" style="background:#0d3b2e;color:#fff;">
+      <span>Flash sale ends in</span>
+      <span class="timer">02:14:33:07</span>
+      <div class="cta" style="background:#fff;color:#0d3b2e;">Grab the deal</div>
+      <span class="close-x">×</span>
+    </div>
+    <div class="mini-nav">
+      <div class="mini-logo">Oakfield</div>
+      <div class="mini-links"><span>Collections</span><span>Gifts</span><span>Sale</span></div>
+    </div>
+  </div>
+
+</div>
+</body>
+</html>

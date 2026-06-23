@@ -1,0 +1,13 @@
+{
+  "buildCommand": "npm run setup && npm run build",
+  "framework": null,
+  "outputDirectory": "build/client",
+  "functions": {
+    "api/index.js": {
+      "runtime": "nodejs20.x"
+    }
+  },
+  "rewrites": [
+    { "source": "/(.*)", "destination": "/api/index" }
+  ]
+}

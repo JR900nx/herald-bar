@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=1600">
+<title>Screenshot 1 — Hero</title>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { width: 1600px; height: 900px; overflow: hidden; font-family: -apple-system, BlinkMacSystemFont, 'Inter', sans-serif; background: #f3f3f3; display: flex; align-items: center; justify-content: center; }
+
+  /* Browser chrome */
+  .browser { width: 1480px; height: 820px; border-radius: 12px; overflow: hidden; box-shadow: 0 24px 80px rgba(0,0,0,0.22); display: flex; flex-direction: column; }
+  .browser-bar { background: #e8e8e8; height: 42px; display: flex; align-items: center; gap: 8px; padding: 0 16px; flex-shrink: 0; }
+  .dot { width: 12px; height: 12px; border-radius: 50%; }
+  .dot.r { background: #ff5f57; }
+  .dot.y { background: #febc2e; }
+  .dot.g { background: #28c840; }
+  .url-bar { background: #fff; border-radius: 6px; height: 26px; flex: 1; max-width: 480px; margin: 0 auto; display: flex; align-items: center; padding: 0 12px; font-size: 12px; color: #555; }
+
+  /* Storefront */
+  .store { flex: 1; background: #fff; display: flex; flex-direction: column; position: relative; overflow: hidden; }
+
+  /* Announcement bar */
+  .ann-bar { background: #1a1a1a; color: #fff; display: flex; align-items: center; justify-content: center; gap: 12px; padding: 13px 48px; font-size: 14px; z-index: 10; flex-shrink: 0; position: relative; }
+  .ann-bar .cta { background: #fff; color: #1a1a1a; padding: 5px 14px; border-radius: 6px; font-weight: 700; font-size: 12px; text-decoration: none; }
+  .ann-bar .close-x { position: absolute; right: 16px; opacity: 0.6; font-size: 18px; }
+
+  /* Nav */
+  .nav { display: flex; align-items: center; justify-content: space-between; padding: 0 48px; height: 62px; border-bottom: 1px solid #e5e5e5; flex-shrink: 0; }
+  .nav-logo { font-weight: 700; font-size: 18px; letter-spacing: -0.5px; color: #111; }
+  .nav-links { display: flex; gap: 28px; font-size: 13px; color: #444; }
+  .nav-actions { display: flex; gap: 14px; align-items: center; }
+  .nav-actions .cart-btn { background: #111; color: #fff; padding: 8px 18px; border-radius: 6px; font-size: 12px; font-weight: 600; }
+
+  /* Hero content */
+  .hero { flex: 1; display: flex; align-items: center; padding: 0 80px; gap: 60px; }
+  .hero-text { flex: 1; }
+  .hero-text h1 { font-size: 42px; font-weight: 800; line-height: 1.1; color: #111; letter-spacing: -1px; }
+  .hero-text p { margin-top: 16px; font-size: 15px; color: #666; line-height: 1.6; max-width: 400px; }
+  .hero-text .shop-now { display: inline-block; margin-top: 28px; background: #111; color: #fff; padding: 13px 28px; border-radius: 8px; font-weight: 600; font-size: 14px; }
+  .hero-img { width: 380px; height: 380px; background: #f5f0eb; border-radius: 16px; display: flex; align-items: center; justify-content: center; }
+  .hero-img .product-placeholder { width: 260px; height: 260px; background: linear-gradient(135deg, #e8e0d5, #d5c9bc); border-radius: 12px; display: flex; align-items: center; justify-content: center; }
+  .product-label { font-size: 13px; color: #999; letter-spacing: 0.04em; }
+
+  /* Badge */
+  .badge { position: absolute; top: 160px; right: 60px; background: #fff; border: 1.5px solid #e5e5e5; border-radius: 12px; padding: 14px 20px; box-shadow: 0 8px 30px rgba(0,0,0,0.08); display: flex; align-items: center; gap: 12px; }
+  .badge-icon { width: 36px; height: 36px; background: #111; border-radius: 8px; display: flex; align-items: center; justify-content: center; color: #fff; font-size: 16px; }
+  .badge-text { font-size: 12px; }
+  .badge-text strong { display: block; font-size: 13px; color: #111; }
+  .badge-text span { color: #888; }
+</style>
+</head>
+<body>
+<div class="browser">
+  <div class="browser-bar">
+    <div class="dot r"></div>
+    <div class="dot y"></div>
+    <div class="dot g"></div>
+    <div class="url-bar">myshop.myshopify.com</div>
+  </div>
+  <div class="store">
+    <div class="ann-bar">
+      <span>Free shipping on orders over $50</span>
+      <a class="cta">Shop now</a>
+      <span class="close-x">×</span>
+    </div>
+    <div class="nav">
+      <div class="nav-logo">Maison</div>
+      <div class="nav-links">
+        <span>Collections</span>
+        <span>New Arrivals</span>
+        <span>Sale</span>
+        <span>About</span>
+      </div>
+      <div class="nav-actions">
+        <span style="font-size:18px;cursor:pointer;">♡</span>
+        <div class="cart-btn">Cart (2)</div>
+      </div>
+    </div>
+    <div class="hero">
+      <div class="hero-text">
+        <h1>Elevate your everyday style</h1>
+        <p>Thoughtfully crafted pieces designed for modern living. Free returns, always.</p>
+        <div class="shop-now">Shop the collection</div>
+      </div>
+      <div class="hero-img">
+        <div class="product-placeholder">
+          <span class="product-label">New Season</span>
+        </div>
+      </div>
+    </div>
+    <div class="badge">
+      <div class="badge-icon">✓</div>
+      <div class="badge-text">
+        <strong>Announcement Bar</strong>
+        <span>Active — 3 clicks today</span>
+      </div>
+    </div>
+  </div>
+</div>
+</body>
+</html>

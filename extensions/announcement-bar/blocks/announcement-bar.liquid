@@ -1,0 +1,368 @@
+{% assign s = block.settings %}
+
+{% unless s.is_enabled == false %}
+  {% assign bg    = s.background_color | default: '#1a1a1a' %}
+  {% assign fg    = s.text_color       | default: '#ffffff' %}
+  {% assign size  = s.font_size        | default: 14 %}
+  {% assign align = s.text_align       | default: 'center' %}
+  {% assign pos   = s.position         | default: 'top' %}
+
+  {% assign has_right_element = false %}
+  {% if s.link_url != blank or s.timer_enabled %}
+    {% assign has_right_element = true %}
+  {% endif %}
+
+  {% if s.layout == 'spread' and has_right_element %}
+    {% assign justify = 'space-between' %}
+  {% else %}
+    {% case align %}
+      {% when 'right'  %}{% assign justify = 'flex-end'   %}
+      {% when 'left'   %}{% assign justify = 'flex-start' %}
+      {% else          %}{% assign justify = 'center'     %}
+    {% endcase %}
+  {% endif %}
+
+  {% assign show_bar = true %}
+  {% if s.schedule_enabled %}
+    {% assign now = 'now' | date: '%s' | plus: 0 %}
+    {% if s.schedule_start != blank %}
+      {% assign start_ts = s.schedule_start | date: '%s' | plus: 0 %}
+      {% if now < start_ts %}{% assign show_bar = false %}{% endif %}
+    {% endif %}
+    {% if s.schedule_end != blank %}
+      {% assign end_ts = s.schedule_end | date: '%s' | plus: 0 %}
+      {% if now > end_ts %}{% assign show_bar = false %}{% endif %}
+    {% endif %}
+  {% endif %}
+
+  {% if show_bar %}
+    <style>
+      #ab-{{ block.id }} {
+        background-color: {{ bg }};
+        color: {{ fg }};
+        display: flex;
+        align-items: center;
+        justify-content: {{ justify }};
+        gap: 8px;
+        padding: 12px 48px;
+        font-size: {{ size }}px;
+        position: fixed;
+        left: 0;
+        right: 0;
+        width: 100%;
+        box-sizing: border-box;
+        z-index: 99999;
+      }
+      {% if pos == 'bottom' %}
+      #ab-{{ block.id }} { bottom: 0; }
+      {% else %}
+      #ab-{{ block.id }} { top: 0; }
+      {% endif %}
+      #ab-{{ block.id }} .ab-link { color: inherit; text-decoration: underline; }
+      #ab-{{ block.id }} .ab-btn {
+        background-color: {{ s.cta_bg_color | default: '#ffffff' }};
+        color: {{ s.cta_text_color | default: '#000000' }};
+        padding: 6px 14px;
+        border-radius: {{ s.cta_border_radius | default: 6 }}px;
+        text-decoration: none;
+        font-weight: 600;
+        font-size: 0.9em;
+        white-space: nowrap;
+        display: inline-block;
+      }
+      #ab-{{ block.id }} .ab-timer { font-weight: 600; letter-spacing: 0.05em; white-space: nowrap; }
+      #ab-{{ block.id }} .ab-close {
+        position: absolute;
+        right: 12px;
+        top: 50%;
+        transform: translateY(-50%);
+        background: none;
+        border: none;
+        color: inherit;
+        cursor: pointer;
+        font-size: 20px;
+        line-height: 1;
+        padding: 4px;
+        opacity: 0.75;
+      }
+      #ab-{{ block.id }} .ab-close:hover { opacity: 1; }
+    </style>
+
+    <div id="ab-{{ block.id }}" {{ block.shopify_attributes }}>
+      <span>{{ s.message | default: 'Free shipping on orders over $50!' }}</span>
+
+      {% if s.timer_enabled and s.timer_end != blank %}
+        <span class="ab-timer">
+          {{ s.timer_label | default: 'Sale ends in' }}
+          <span id="ab-countdown-{{ block.id }}"></span>
+        </span>
+      {% endif %}
+
+      {% if s.link_url != blank %}
+        {% if s.cta_style == 'button' %}
+          <a href="{{ s.link_url }}" class="ab-btn">{{ s.link_text | default: 'Shop now' }}</a>
+        {% else %}
+          <a href="{{ s.link_url }}" class="ab-link">{{ s.link_text | default: 'Learn more' }}</a>
+        {% endif %}
+      {% endif %}
+
+      {% if s.show_close_button %}
+        <button class="ab-close" aria-label="Close announcement" id="ab-close-{{ block.id }}">&times;</button>
+      {% endif %}
+    </div>
+
+    {% if s.timer_enabled and s.timer_end != blank %}
+      <script>
+        (function () {
+          var end = new Date({{ s.timer_end | json }}).getTime();
+          var el = document.getElementById('ab-countdown-{{ block.id }}');
+          if (!el) return;
+          function tick() {
+            var diff = end - Date.now();
+            if (diff <= 0) { el.textContent = '00:00:00:00'; return; }
+            var d = Math.floor(diff / 86400000);
+            var h = Math.floor((diff % 86400000) / 3600000);
+            var m = Math.floor((diff % 3600000) / 60000);
+            var sec = Math.floor((diff % 60000) / 1000);
+            el.textContent = [d,h,m,sec].map(function(n){ return String(n).padStart(2,'0'); }).join(':');
+          }
+          tick();
+          setInterval(tick, 1000);
+        })();
+      </script>
+    {% endif %}
+
+    <script>
+      (function () {
+        var bar = document.getElementById('ab-{{ block.id }}');
+        var isBottom = {{ pos | json }} === 'bottom';
+        if (!bar) return;
+
+        var headerSelectors = 'header, .header, #header, [class*="header"], .sticky, .site-header, #shopify-section-header, .announcement-bar ~ *';
+
+        function applyOffset() {
+          var h = bar.offsetHeight;
+          if (isBottom) {
+            document.body.style.paddingBottom = h + 'px';
+          } else {
+            document.body.style.paddingTop = h + 'px';
+            document.querySelectorAll(headerSelectors).forEach(function(el) {
+              var cs = window.getComputedStyle(el);
+              if (cs.position === 'sticky' || cs.position === 'fixed') el.style.top = h + 'px';
+            });
+          }
+        }
+
+        // Run after DOM settles so sticky headers have their position computed
+        if (document.readyState === 'loading') {
+          document.addEventListener('DOMContentLoaded', applyOffset);
+        } else {
+          applyOffset();
+        }
+        window.addEventListener('resize', applyOffset);
+
+        // Also run after a short delay in case theme JS applies sticky after load
+        setTimeout(applyOffset, 300);
+
+        var closeBtn = document.getElementById('ab-close-{{ block.id }}');
+        if (closeBtn) {
+          closeBtn.addEventListener('click', function() {
+            bar.style.display = 'none';
+            if (isBottom) {
+              document.body.style.paddingBottom = '0px';
+            } else {
+              document.body.style.paddingTop = '0px';
+              document.querySelectorAll(headerSelectors).forEach(function(el) {
+                var cs = window.getComputedStyle(el);
+                if (cs.position === 'sticky' || cs.position === 'fixed') el.style.top = '0px';
+              });
+            }
+          });
+        }
+      })();
+    </script>
+  {% endif %}
+{% endunless %}
+
+{% schema %}
+{
+  "name": "Herald Bar",
+  "target": "body",
+  "settings": [
+    {
+      "type": "checkbox",
+      "id": "is_enabled",
+      "label": "Enable announcement bar",
+      "default": true
+    },
+    {
+      "type": "header",
+      "content": "Content"
+    },
+    {
+      "type": "text",
+      "id": "message",
+      "label": "Message",
+      "default": "Free shipping on orders over $50!"
+    },
+    {
+      "type": "url",
+      "id": "link_url",
+      "label": "Link URL"
+    },
+    {
+      "type": "text",
+      "id": "link_text",
+      "label": "Link text",
+      "default": "Shop now"
+    },
+    {
+      "type": "header",
+      "content": "Appearance"
+    },
+    {
+      "type": "color",
+      "id": "background_color",
+      "label": "Background color",
+      "default": "#1a1a1a"
+    },
+    {
+      "type": "color",
+      "id": "text_color",
+      "label": "Text color",
+      "default": "#ffffff"
+    },
+    {
+      "type": "range",
+      "id": "font_size",
+      "label": "Font size",
+      "min": 10,
+      "max": 24,
+      "step": 1,
+      "default": 14,
+      "unit": "px"
+    },
+    {
+      "type": "select",
+      "id": "layout",
+      "label": "Layout",
+      "options": [
+        { "value": "grouped", "label": "Grouped" },
+        { "value": "spread", "label": "Spread" }
+      ],
+      "default": "grouped"
+    },
+    {
+      "type": "select",
+      "id": "text_align",
+      "label": "Text alignment",
+      "options": [
+        { "value": "left", "label": "Left" },
+        { "value": "center", "label": "Center" },
+        { "value": "right", "label": "Right" }
+      ],
+      "default": "center"
+    },
+    {
+      "type": "select",
+      "id": "position",
+      "label": "Position",
+      "options": [
+        { "value": "top", "label": "Top of page" },
+        { "value": "bottom", "label": "Bottom of page" }
+      ],
+      "default": "top"
+    },
+    {
+      "type": "header",
+      "content": "Call to action"
+    },
+    {
+      "type": "select",
+      "id": "cta_style",
+      "label": "Style",
+      "options": [
+        { "value": "link", "label": "Plain link" },
+        { "value": "button", "label": "Button" }
+      ],
+      "default": "link"
+    },
+    {
+      "type": "color",
+      "id": "cta_bg_color",
+      "label": "Button background",
+      "default": "#ffffff"
+    },
+    {
+      "type": "color",
+      "id": "cta_text_color",
+      "label": "Button text color",
+      "default": "#000000"
+    },
+    {
+      "type": "range",
+      "id": "cta_border_radius",
+      "label": "Corner radius",
+      "min": 0,
+      "max": 24,
+      "step": 1,
+      "default": 6,
+      "unit": "px"
+    },
+    {
+      "type": "header",
+      "content": "Settings"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_close_button",
+      "label": "Show close button",
+      "default": true
+    },
+    {
+      "type": "header",
+      "content": "Scheduling"
+    },
+    {
+      "type": "checkbox",
+      "id": "schedule_enabled",
+      "label": "Only show during a scheduled period",
+      "default": false
+    },
+    {
+      "type": "text",
+      "id": "schedule_start",
+      "label": "Start date and time",
+      "info": "Format: YYYY-MM-DD HH:MM e.g. 2026-07-01 09:00"
+    },
+    {
+      "type": "text",
+      "id": "schedule_end",
+      "label": "End date and time",
+      "info": "Format: YYYY-MM-DD HH:MM e.g. 2026-07-31 23:59"
+    },
+    {
+      "type": "header",
+      "content": "Countdown timer"
+    },
+    {
+      "type": "checkbox",
+      "id": "timer_enabled",
+      "label": "Show countdown timer",
+      "default": false
+    },
+    {
+      "type": "text",
+      "id": "timer_end",
+      "label": "Countdown target",
+      "info": "Format: YYYY-MM-DD HH:MM e.g. 2026-07-31 23:59"
+    },
+    {
+      "type": "text",
+      "id": "timer_label",
+      "label": "Timer label",
+      "default": "Sale ends in"
+    }
+  ]
+}
+{% endschema %}
