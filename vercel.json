@@ -1,10 +1,5 @@
 {
   "buildCommand": "npx prisma generate && react-router build",
-  "functions": {
-    "api/index.js": {
-      "maxDuration": 30
-    }
-  },
   "rewrites": [
     { "source": "/(.*)", "destination": "/api/index" }
   ]

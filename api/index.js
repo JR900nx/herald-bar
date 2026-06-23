@@ -1,4 +1,11 @@
-import { createRequestHandler } from "@react-router/node";
-import * as build from "../build/server/index.js";
+const { createRequestHandler } = require("@react-router/node");
 
-export default createRequestHandler({ build });
+let handler;
+
+module.exports = async (req, res) => {
+  if (!handler) {
+    const build = await import("../build/server/index.js");
+    handler = createRequestHandler({ build });
+  }
+  return handler(req, res);
+};
