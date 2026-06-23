@@ -28,4 +28,4 @@ api_version = "2026-07"
 scopes = ""
 
 [auth]
-redirect_urls = [ "https://app.delovulabs.com/api/auth" ]
+redirect_urls = [ "https://app.delovulabs.com/auth/callback" ]
