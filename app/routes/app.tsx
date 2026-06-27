@@ -1,3 +1,4 @@
+import { useEffect } from "react";
 import type { HeadersFunction, LoaderFunctionArgs } from "react-router";
 import { Outlet, useLoaderData, useRouteError } from "react-router";
 import { boundary } from "@shopify/shopify-app-react-router/server";
@@ -14,6 +15,14 @@ export const loader = async ({ request }: LoaderFunctionArgs) => {
 
 export default function App() {
   const { apiKey } = useLoaderData<typeof loader>();
+
+  useEffect(() => {
+    // Send an authenticated request so Shopify detects session token usage
+    const win = window as unknown as { shopify?: { idToken: () => Promise<string> } };
+    win.shopify?.idToken().then((token) => {
+      fetch("/app/ping", { headers: { Authorization: `Bearer ${token}` } }).catch(() => {});
+    }).catch(() => {});
+  }, []);
 
   return (
     <AppProvider embedded apiKey={apiKey}>
